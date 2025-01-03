@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Sale</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #pixelCanvas {
+            border: 1px solid black;
+            width: 80%;
+            height: 500px;
+            background-color: #f0f0f0;
+            margin: 20px auto;
+        }
+
+        #paypal-button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pixel Sale</h1>
+
+    <!-- Canvas para o grid de pixels -->
+    <canvas id="pixelCanvas"></canvas>
+
+    <!-- Container para o botão do PayPal -->
+    <div id="paypal-button-container"></div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AUruYoaznFm4z0ZIv03q9jHiL6kzpjnLmHGSxUjfiGxFxwLWjt-3MEvfigtL_PvvrJyseb5zhBQm3TGw"></script>
+    <script>
+        // Acessando o canvas
+        const canvas = document.getElementById('pixelCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Definindo o tamanho do canvas
+        canvas.width = 800;
+        canvas.height = 500;
+
+        const pixelSize = 10;
+        const rows = canvas.height / pixelSize;
+        const cols = canvas.width / pixelSize;
+
+        // Função para desenhar a grid
+        function drawGrid() {
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    ctx.strokeStyle = "#ddd"; // Cor da linha
+                    ctx.strokeRect(j * pixelSize, i * pixelSize, pixelSize, pixelSize); // Desenhar o pixel
+                }
+            }
+        }
+
+        // Desenhar a grid de pixels
+        drawGrid();
+
+        // Função para preencher os pixels ao clicar
+        canvas.addEventListener('click', (e) => {
+            const x = Math.floor(e.offsetX / pixelSize);
+            const y = Math.floor(e.offsetY / pixelSize);
+            ctx.fillStyle = '#ff0000'; // Cor do pixel
+            ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize); // Preencher o pixel
+            console.log(`Pixel comprado em (${x}, ${y})`);
+        });
+
+        // Iniciar o botão do PayPal
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '1.00' // Valor do pixel (ajuste conforme necessário)
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Pagamento aprovado! ' + details.payer.name.given_name);
+                    // Aqui você pode adicionar o código para registrar a compra no seu sistema
+                });
+            }
+        }).render('#paypal-button-container'); // Renderiza o botão no container especificado
+    </script>
+</body>
+</html>

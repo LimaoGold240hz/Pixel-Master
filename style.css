@@ -1,0 +1,19 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#pixelCanvas {
+    border: 1px solid black;
+    width: 100%;
+    height: 100vh;
+    background-color: #f0f0f0;
+    display: block;
+    margin: 0 auto;
+    z-index: 1;  /* Garante que o canvas esteja visível */
+}
+
+#paypal-button-container {
+    z-index: 0;  /* O PayPal fica abaixo do canvas */
+    position: relative;
+}
